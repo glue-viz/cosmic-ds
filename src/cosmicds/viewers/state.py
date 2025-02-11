@@ -24,6 +24,8 @@ def cds_viewer_state(state_class):
 
         subtitle = CallbackProperty("")
 
+        reset_limits_from_visible = CallbackProperty(True)
+
         @staticmethod
         def tick_spacing(naive_spacing):
             mantissa, exp = frexp10(naive_spacing)
@@ -153,7 +155,9 @@ class CDSScatterViewerState(ScatterViewerState):
         max_value = max((b[1] for b in bounds), default=1)
         return min_value, max_value
     
-    def reset_limits(self, visible_only=True):
+    def reset_limits(self, visible_only=None):
+        if visible_only is None:
+            visible_only = getattr(self, "reset_limits_from_visible", True)
         if not visible_only:
             super().reset_limits()
             return
@@ -202,7 +206,9 @@ class CDSHistogramViewerState(PlotlyHistogramViewerState):
             self.x_min = min_value
             self.x_max = max_value - spacing(max_value)
     
-    def reset_limits(self, visible_only=True):
+    def reset_limits(self, visible_only=None):
+        if visible_only is None:
+            visible_only = getattr(self, "reset_limits_from_visible", True)
         if not visible_only:
             super().reset_limits()
             return
